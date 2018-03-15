@@ -1,6 +1,8 @@
 const passport = require('passport');
+const mongoose = require('mongoose');
 const SpotifyStrategy = require('passport-spotify').Strategy;
 const keys = require('./keys');
+const User = mongoose.model('User');
 
 // storing entire profile in session for now
 // ideally should store only ID and then look up profile from cache/db by ID during deserealization
@@ -20,10 +22,20 @@ passport.use(
       clientSecret: keys.clientSecret,
       callbackURL: '/auth/spotify/callback',
     },
-    (accessToken, refreshToken, expiresIn, profile, done) => {
-      console.log(accessToken);
+    async (accessToken, refreshToken, expiresIn, profile, done) => {
       console.log(profile);
-      return done(null, profile);
+      try {
+        const existingUser = await User.findOne({ spotifyID: profile.id }).exec();
+        if (existingUser) {
+          done(null, existingUser);
+        } else {
+          const newUser = await new User({ spotifyID: profile.id, email: profile.email }).save();
+          done(null, newUser);
+        }
+      } catch (err) {
+        console.log(err);
+        done(err, null);
+      }
     }
   )
 );

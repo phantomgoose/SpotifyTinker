@@ -6,6 +6,9 @@ const passport = require('passport');
 const app = express();
 const keys = require('./config/keys');
 
+// init mongoose
+require('./config/mongooseConfig');
+
 // set up middleware
 // should probably use some kind of session store later
 app.use(session({ secret: keys.sessionSecret, resave: false, saveUninitialized: false }));
