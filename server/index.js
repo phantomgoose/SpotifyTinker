@@ -10,6 +10,7 @@ const keys = require('./config/keys');
 require('./config/mongooseConfig');
 
 // set up middleware
+app.use(express.static(path.join(__dirname, '../client/build')));
 // should probably use some kind of session store later
 app.use(session({ secret: keys.sessionSecret, resave: false, saveUninitialized: false }));
 app.use(passport.initialize());
