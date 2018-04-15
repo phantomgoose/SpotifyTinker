@@ -23,13 +23,14 @@ passport.use(
       callbackURL: '/auth/spotify/callback',
     },
     async (accessToken, refreshToken, expiresIn, profile, done) => {
+      console.log(profile);
       try {
         const existingUser = await User.findOne({ spotifyID: profile.id }).exec();
         if (existingUser) {
-          done(null, { ...existingUser, token: accessToken });
+          done(null, { username: existingUser.spotifyID, token: accessToken });
         } else {
-          const newUser = await new User({ spotifyID: profile.id, email: profile.email }).save();
-          done(null, { ...newUser, token: accessToken });
+          const newUser = await new User({ spotifyID: profile.id }).save();
+          done(null, { username: newUser.spotifyID, token: accessToken });
         }
       } catch (err) {
         console.log(err);

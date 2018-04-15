@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
+import { Provider } from 'react-redux';
+import Playback from './components/Playback';
+import Login from './containers/Login';
+import store from './store';
 
 class App extends Component {
   render() {
     return (
-      <div>
-        <a href="/auth/spotify">Log in</a>
-        <a href="/spotify/play">Play</a>
-        <a href="spotify/pause">Pause</a>
-      </div>
+      <Provider store={store}>
+        <div>
+          <Login />
+          <Playback />
+        </div>
+      </Provider>
     );
   }
 }
