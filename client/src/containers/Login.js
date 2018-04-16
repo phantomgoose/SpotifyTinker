@@ -19,7 +19,7 @@ class Login extends Component {
     return (
       <div>
         <p>Hi, {this.props.user.username}</p>
-        <p>Your top tracks:</p>
+        <p>Your top 50 tracks:</p>
         <TopTracks />
       </div>
     );

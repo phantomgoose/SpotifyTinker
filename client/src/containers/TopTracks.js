@@ -13,21 +13,22 @@ class TopTracks extends Component {
       return <p>No tracks to show... yet?</p>;
     }
     console.log(this.props.tracks);
+    const barColors = ['brown', 'orange', 'red', 'purple', 'blue'];
     const overAllStatsCumulative = {
       acousticness: 0,
       danceability: 0,
       energy: 0,
       instrumentalness: 0,
-      speechiness: 0,
       valence: 0,
     };
     const trackItems = this.props.tracks.map(track => {
       const trackData = {
-        labels: ['acousticness', 'danceability', 'energy', 'instrumentalness', 'speechiness', 'valence'],
+        labels: ['acousticness', 'danceability', 'energy', 'instrumentalness', 'valence'],
         datasets: [
           {
             label: track.name,
-            data: [track.acousticness, track.danceability, track.energy, track.instrumentalness, track.speechiness, track.valence],
+            backgroundColor: barColors,
+            data: [track.acousticness, track.danceability, track.energy, track.instrumentalness, track.valence],
           },
         ],
       };
@@ -50,16 +51,16 @@ class TopTracks extends Component {
     console.log(trackItems);
     console.log(overAllStatsCumulative);
     const overAllStatsData = {
-      labels: ['acousticness', 'danceability', 'energy', 'instrumentalness', 'speechiness', 'valence'],
+      labels: ['acousticness', 'danceability', 'energy', 'instrumentalness', 'valence'],
       datasets: [
         {
           label: 'Overall averages',
+          backgroundColor: barColors,
           data: [
             overAllStatsCumulative.acousticness,
             overAllStatsCumulative.danceability,
             overAllStatsCumulative.energy,
             overAllStatsCumulative.instrumentalness,
-            overAllStatsCumulative.speechiness,
             overAllStatsCumulative.valence,
           ],
         },
@@ -67,10 +68,10 @@ class TopTracks extends Component {
     };
     return (
       <ol>
-        <li>
+        <div>
           Overall averages
           <Bar data={overAllStatsData} height={100} width={50} options={{ legend: { display: false }, maintainAspectRatio: false }} />
-        </li>
+        </div>
         {trackItems}
       </ol>
     );
