@@ -9,8 +9,8 @@ class App extends Component {
     return (
       <Provider store={store}>
         <div>
-          <Login />
           <Playback />
+          <Login />
         </div>
       </Provider>
     );

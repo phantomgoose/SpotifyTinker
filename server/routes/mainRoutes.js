@@ -53,11 +53,32 @@ module.exports = app => {
       },
     };
     try {
-      const response = await fetch('https://api.spotify.com/v1/me/top/tracks', reqConfig);
-      if (!response.ok) {
-        throw new Error(response.status);
+      const tracksResponse = await fetch('https://api.spotify.com/v1/me/top/tracks?limit=50', reqConfig);
+      if (!tracksResponse.ok) {
+        throw new Error(tracksResponse.status);
       }
-      res.send({ success: true, payload: await response.json() });
+      const tracksResponseJSON = await tracksResponse.json();
+      const tracksIDs = tracksResponseJSON.items.reduce((queryString, item) => {
+        return queryString + item.id + ',';
+      }, '');
+      // console.log(tracksIDs);
+      const audioFeaturesResponse = await fetch(`https://api.spotify.com/v1/audio-features?ids=${tracksIDs}`, reqConfig);
+      if (!audioFeaturesResponse.ok) {
+        throw new Error(audioFeaturesResponse.status);
+      }
+      const audioFeaturesResponseJSON = await audioFeaturesResponse.json();
+      console.log(audioFeaturesResponseJSON);
+      tracksResponseJSON.items.forEach((item, idx) => {
+        const audioFeatures = audioFeaturesResponseJSON.audio_features.find(track => {
+          return track.id === item.id;
+        });
+        // console.log(audioFeatures);
+        tracksResponseJSON.items[idx] = {
+          ...item,
+          ...audioFeatures,
+        };
+      });
+      res.send({ success: true, payload: tracksResponseJSON });
     } catch (err) {
       console.log(err);
       res.send({ success: false, payload: JSON.stringify(err) });
